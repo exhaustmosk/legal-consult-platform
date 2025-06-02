@@ -1,0 +1,273 @@
+:root {
+  --primary-blue: #003366;
+  --primary-yellow: #f7c948;
+  --light-blue: #e6f0ff;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Prevents scrolling */
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #e0f7fa, #ffffff);
+}
+
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.top-strip {
+  background-color: #003366;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  font-size: 26px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align to top instead of center */
+  height: 100vh;
+  padding-top: 4rem; /* Space from top */
+  /* background: linear-gradient(to right, #e0f7fa, #ffffff); */
+}
+
+/* Login Box Styling */
+.login-box {
+  background-color: #f5faff;
+  border: 2px solid #0077cc;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 320px;
+  box-shadow: 0 4px 12px rgba(0, 119, 204, 0.2);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Title */
+.login-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #0077cc;
+  font-weight: bold;
+}
+
+/* Inputs */
+.login-input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+/* Button */
+.login-button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #005fa3;
+}
+
+/* Error Message */
+.login-error {
+  color: red;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.main-nav {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  background-color: #fef08a;
+  padding: 15px;
+  font-size: 18px;
+}
+
+.main-nav a {
+  text-decoration: none;
+  color: #003366;
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.main-nav a:hover {
+  transform: scale(1.1);
+  color: #000;
+}
+
+.main-content {
+  flex: 1;
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+}
+
+.message-form-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f0f4ff;
+  min-height: 100vh;
+}
+
+.message-form-container {
+  margin-top: 30px;
+  background: white;
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  width: 400px;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.message-form-container h2 {
+  margin-bottom: 20px;
+  color: #004aad;
+}
+
+.message-textarea {
+  width: 100%;
+  height: 140px;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 2px solid #004aad;
+  resize: vertical;
+  margin-bottom: 12px;
+  transition: border-color 0.3s ease;
+}
+
+.message-textarea:focus {
+  border-color: #f2c94c;
+  outline: none;
+}
+
+.error-text {
+  color: #d93025;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.submit-button, .back-button {
+  background-color: #004aad;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  margin: 6px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover, .back-button:hover {
+  background-color: #f2c94c;
+  color: #004aad;
+}
+
+.admin-messages {
+  padding: 1.5rem;
+}
+
+.message-list {
+  list-style: none;
+  padding: 0;
+}
+
+.message-box {
+  border: 1px solid #ccc;
+  border-left: 6px solid #007bff;
+  background-color: #f1f9ff;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+.profile-menu {
+  position: relative;
+  display: inline-block;
+  background-color: #0077cc;
+  padding: 0.5rem 1rem;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.profile-menu span {
+  font-weight: bold;
+}
+
+.profile-menu .dropdown {
+  display: none;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  min-width: 160px;
+  z-index: 1;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.profile-menu .dropdown a,
+.profile-menu .dropdown button {
+  color: #333;
+  padding: 10px 15px;
+  text-align: left;
+  text-decoration: none;
+  display: block;
+  background-color: white;
+  border: none;
+  width: 100%;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.profile-menu .dropdown a:hover,
+.profile-menu .dropdown button:hover {
+  background-color: #f0f0f0;
+}
+
+.profile-menu:hover .dropdown {
+  display: block;
+}
