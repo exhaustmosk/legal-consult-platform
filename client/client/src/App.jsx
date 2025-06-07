@@ -6,7 +6,9 @@ import PaymentPage from './pages/PaymentPage';
 import MessageForm from './pages/MessageForm';
 import LoginPage from './pages/LoginPage';
 import AdminMessages from './pages/AdminMessages';
-
+import TransactionHistory from './pages/Transactionhistory';
+import CallScheduleForm from './pages/CallScheduleForm';
+import AdminCallBookings from './pages/AdminCallBookings';
 import './styles/theme.css';
 
 function App() {
@@ -36,6 +38,7 @@ function App() {
     <>
       <Link to="/user-login">User Login</Link>
       <Link to="/admin-login">Admin Login</Link>
+      
     </>
   ) : (
     <div className="profile-menu">
@@ -45,12 +48,16 @@ function App() {
           <>
             <Link to="/user-dashboard">Dashboard</Link>
             <Link to="/payment">Payment History</Link>
+            <Link to="/transaction-history">Transaction History</Link>
+            <Link to="/call-schedule">Schedule Call</Link>
+
           </>
         )}
         {user.type === 'admin' && (
           <>
             <Link to="/admin-dashboard">Dashboard</Link>
             <Link to="/admin-messages">View Messages</Link>
+            <Link to="/admin-call-bookings">Scheduled Calls</Link>
           </>
         )}
         <button onClick={handleLogout}>Logout</button>
@@ -62,6 +69,7 @@ function App() {
 
       <main className="main-content">
         <Routes>
+          <Route path="/transaction-history" element={<TransactionHistory />} />
           <Route path="/admin-messages" element={<AdminMessages />} />
           <Route path="/user-login" element={<LoginPage type="user" setUser={setUser} />} />
           <Route path="/admin-login" element={<LoginPage type="admin" setUser={setUser} />} />
@@ -69,6 +77,8 @@ function App() {
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/user-dashboard" element={<UserDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/call-schedule" element={<CallScheduleForm />} />
+          <Route path="/admin-call-bookings" element={<AdminCallBookings />} />
         </Routes>
       </main>
     </div>

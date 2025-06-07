@@ -271,3 +271,51 @@ body, html {
 .profile-menu:hover .dropdown {
   display: block;
 }
+
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.transaction-table th, .transaction-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+.transaction-table th {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.form-page {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.form-box {
+  background: #f0f4ff;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 350px;
+}
+
+.form-box h2 {
+  margin-bottom: 1rem;
+  color: #002c5f;
+}
+
+.appointment-list {
+  list-style: none;
+  padding: 0;
+}
+
+.appointment-card {
+  background: #e9f0ff;
+  border-left: 4px solid #0057d8;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-radius: 6px;
+}
