@@ -319,3 +319,101 @@ body, html {
   margin: 0.5rem 0;
   border-radius: 6px;
 }
+
+.tab-bar {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  background-color: #003366;
+  padding: 0.8rem;
+}
+
+.tab-bar a {
+  color: #ffcc00;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 1rem;
+  right: 2rem;
+  color: white;
+}
+
+.profile-dropdown .dropdown {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: #004080;
+  padding: 0.5rem;
+  border-radius: 5px;
+}
+
+.homepage-container {
+  padding: 2rem;
+  text-align: center;
+}
+
+.homepage-img {
+  width: 60%;
+  max-width: 500px;
+  margin-top: 1rem;
+  border-radius: 10px;
+}
+
+.about-section {
+  margin-top: 3rem;
+}
+
+.profile-wrapper {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+}
+
+.profile-avatar {
+  width: 40px;
+  height: 40px;
+  background-color: #1d4ed8;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.profile-dropdown {
+  background: #f3f4f6;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  z-index: 10;
+  min-width: 160px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-dropdown a,
+.profile-dropdown button {
+  text-align: left;
+  padding: 6px;
+  text-decoration: none;
+  border: none;
+  background: none;
+  color: #1f2937;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.profile-dropdown a:hover,
+.profile-dropdown button:hover {
+  background-color: #e0e7ff;
+}
