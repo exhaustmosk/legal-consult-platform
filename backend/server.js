@@ -1,3 +1,4 @@
+require('dotenv').config(); // ✅ Load environment variables
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -9,32 +10,33 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const PORT = 5000;
-const mongoUrl = '***REMOVED***1code2blasphemy@cluster0.hamrflp.mongodb.net/?retryWrites=true&w=majority';
+// ✅ Use environment variables
+const PORT = process.env.PORT || 5000;
+const mongoUrl = process.env.MONGO_URI;
 const client = new MongoClient(mongoUrl, { useUnifiedTopology: true });
 
 let usersCollection;
 let callsCollection;
-let messagesCollection; // ✅ added
+let messagesCollection;
 
 client.connect()
   .then(() => {
     const db = client.db('legal_consultation');
     usersCollection = db.collection('users');
     callsCollection = db.collection('calls');
-    messagesCollection = db.collection('messages'); // ✅ initialized
+    messagesCollection = db.collection('messages');
     console.log('✅ MongoDB connected');
-    app.listen(PORT, () => console.log(`🚀 Server at http://localhost:${PORT}`));
+    app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
   })
-  .catch(err => console.error('❌ DB error', err));
+  .catch(err => console.error('❌ MongoDB connection error:', err));
 
-// OTP logic
+// 🔐 OTP logic
 const otpStore = new Map();
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: '***REMOVED***',
-    pass: '***REMOVED***',
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -44,14 +46,14 @@ function generateOtp() {
 
 async function sendOtpEmail(email, otp) {
   await transporter.sendMail({
-    from: '***REMOVED***',
+    from: process.env.EMAIL_USER,
     to: email,
     subject: 'Your OTP Code',
     text: `Your OTP code is: ${otp}`,
   });
 }
 
-// OTP endpoints
+// 📩 OTP routes
 app.post('/api/send-otp', async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ success: false });
@@ -61,9 +63,9 @@ app.post('/api/send-otp', async (req, res) => {
 
   try {
     await sendOtpEmail(email, otp);
-    return res.json({ success: true });
+    res.json({ success: true });
   } catch {
-    return res.status(500).json({ success: false });
+    res.status(500).json({ success: false });
   }
 });
 
@@ -72,12 +74,13 @@ app.post('/api/verify-otp', (req, res) => {
   const stored = otpStore.get(email);
   if (stored === otp) {
     otpStore.delete(email);
-    return res.json({ success: true });
+    res.json({ success: true });
+  } else {
+    res.json({ success: false });
   }
-  return res.json({ success: false });
 });
 
-// Registration
+// 👤 Registration
 app.post('/api/register', async (req, res) => {
   const { name, email, phone, password } = req.body;
   try {
@@ -89,14 +92,17 @@ app.post('/api/register', async (req, res) => {
     const hash = await bcrypt.hash(password, 10);
     await usersCollection.insertOne({ name, email, phone, password: hash, type: 'user' });
 
-    return res.json({ success: true });
+    res.json({ success: true });
   } catch {
-    return res.status(500).json({ success: false });
+    res.status(500).json({ success: false });
   }
 });
 
-// Admin login
-const ADMIN = { email: 'a', password: 'admin123' };
+// 🔐 Login (admin + user)
+const ADMIN = {
+  email: process.env.ADMIN_EMAIL,
+  password: process.env.ADMIN_PASS,
+};
 
 app.post('/api/login', async (req, res) => {
   const { email, password, type } = req.body;
@@ -110,7 +116,9 @@ app.post('/api/login', async (req, res) => {
     } else {
       return res.status(401).json({ success: false, message: 'Invalid admin credentials' });
     }
-  } else if (type === 'user') {
+  }
+
+  if (type === 'user') {
     const user = await usersCollection.findOne({ email });
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ success: false, message: 'Invalid user credentials' });
@@ -125,7 +133,7 @@ app.post('/api/login', async (req, res) => {
   return res.status(400).json({ success: false, message: 'Invalid login type' });
 });
 
-// 🗓️ Schedule Call
+// 📅 Schedule Call
 app.post('/api/schedule-call', async (req, res) => {
   const { name, email, phone, date, time, reason } = req.body;
 
@@ -143,35 +151,32 @@ app.post('/api/schedule-call', async (req, res) => {
       reason,
       attended: false
     });
-    return res.json({ success: true });
+    res.json({ success: true });
   } catch (err) {
-    console.error('Error scheduling call:', err);
-    return res.status(500).json({ success: false, message: 'Internal server error' });
+    console.error('❌ Error scheduling call:', err);
+    res.status(500).json({ success: false });
   }
 });
 
-// 📞 Get Scheduled Calls (Admin)
+// 📞 Admin view calls
 app.get('/api/scheduled-calls', async (req, res) => {
   try {
-    const allCalls = await callsCollection.find({}).toArray();
-    return res.json({ success: true, calls: allCalls });
-  } catch (err) {
-    console.error('Error fetching scheduled calls:', err);
-    return res.status(500).json({ success: false, message: 'Internal server error' });
+    const calls = await callsCollection.find({}).toArray();
+    res.json({ success: true, calls });
+  } catch {
+    res.status(500).json({ success: false });
   }
 });
 
-// 📞 Admin View All Calls
 app.get('/api/admin/calls', async (req, res) => {
   try {
     const calls = await callsCollection.find({}).toArray();
     res.json({ success: true, calls });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Failed to fetch calls' });
+  } catch {
+    res.status(500).json({ success: false });
   }
 });
 
-// ✅ Mark Call as Attended
 app.post('/api/admin/calls/mark-attended', async (req, res) => {
   const { callId, attended } = req.body;
   try {
@@ -180,12 +185,12 @@ app.post('/api/admin/calls/mark-attended', async (req, res) => {
       { $set: { attended } }
     );
     res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Failed to update status' });
+  } catch {
+    res.status(500).json({ success: false });
   }
 });
 
-// 📝 Submit Message
+// 📨 Send message
 app.post('/api/messages', async (req, res) => {
   const { name, email, message } = req.body;
   if (!name || !email || !message) {
@@ -199,20 +204,23 @@ app.post('/api/messages', async (req, res) => {
       message,
       timestamp: new Date()
     });
-    return res.json({ success: true });
-  } catch (err) {
-    console.error('Error saving message:', err);
-    return res.status(500).json({ success: false, message: 'Server error' });
+    res.json({ success: true });
+  } catch {
+    res.status(500).json({ success: false });
   }
 });
 
-// 📄 Admin View All Messages
+// 📬 Admin view messages
 app.get('/api/messages', async (req, res) => {
   try {
-    const allMessages = await messagesCollection.find({}).toArray();
-    return res.json({ success: true, messages: allMessages });
-  } catch (err) {
-    console.error('Error fetching messages:', err);
-    return res.status(500).json({ success: false, message: 'Internal server error' });
+    const messages = await messagesCollection.find({}).toArray();
+    res.json({ success: true, messages });
+  } catch {
+    res.status(500).json({ success: false });
   }
+});
+
+// 👋 Fallback
+app.get('/', (req, res) => {
+  res.send('🛡️ Legal Consultation API Running');
 });
