@@ -1,25 +1,42 @@
 import { useState } from 'react';
-import { users } from '../mockUsers';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import '../styles/theme.css';
 
 function LoginPage({ type, setUser }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    const found = users.find(
-      u => u.type === type && u.email === email && u.password === password
-    );
-    if (found) {
-      const loggedInUser = { type, email };
-      setUser(loggedInUser);
-      localStorage.setItem('authUser', JSON.stringify(loggedInUser));
-      navigate(type === 'admin' ? '/admin-dashboard' : '/user-dashboard');
-    } else {
-      setError('Invalid credentials');
+  const handleLogin = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password, type })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        // ✅ Store full user object (with name & email)
+        const loggedInUser = data.user;
+        if (setUser) setUser(loggedInUser);
+        localStorage.setItem('authUser', JSON.stringify(loggedInUser));
+
+        // ✅ Navigate to dashboard
+        navigate(type === 'admin' ? '/admin-dashboard' : '/user-dashboard');
+      } else {
+        setError(data.message || 'Invalid credentials');
+      }
+    } catch (err) {
+      setError('Server error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -28,6 +45,7 @@ function LoginPage({ type, setUser }) {
       <div className="login-container">
         <div className="login-box">
           <h2 className="login-title">{type === 'admin' ? 'Admin Login' : 'User Login'}</h2>
+
           <input
             type="text"
             placeholder="Email"
@@ -42,8 +60,18 @@ function LoginPage({ type, setUser }) {
             onChange={e => setPassword(e.target.value)}
             className="login-input"
           />
-          <button onClick={handleLogin} className="login-button">Login</button>
+
+          <button onClick={handleLogin} className="login-button" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+
           {error && <p className="login-error">{error}</p>}
+
+          {type === 'user' && (
+            <p className="register-link">
+              Don't have an account? <Link to="/register">Create a new account</Link>
+            </p>
+          )}
         </div>
       </div>
     </div>

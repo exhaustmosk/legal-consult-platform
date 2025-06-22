@@ -1,53 +1,46 @@
-// src/pages/CallScheduleForm.jsx
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import '../styles/theme.css';
 
 function CallScheduleForm() {
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
-  const [notes, setNotes] = useState('');
-  const navigate = useNavigate();
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    date: '',
+    time: '',
+    reason: '',
+  });
+  const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-    const appointments = JSON.parse(localStorage.getItem('callAppointments')) || [];
-    const newBooking = {
-      id: Date.now(),
-      date,
-      time,
-      notes,
-    };
-    appointments.push(newBooking);
-    localStorage.setItem('callAppointments', JSON.stringify(appointments));
+  const handleSubmit = async () => {
+    const res = await fetch('http://localhost:5000/api/schedule-call', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
 
-    alert('Call scheduled successfully!');
-    navigate('/user-dashboard');
+    const data = await res.json();
+    if (data.success) {
+      setSuccess(true);
+      setForm({ name: '', email: '', phone: '', date: '', time: '', reason: '' });
+    }
   };
 
   return (
-    <div className="form-page">
-      <div className="form-box">
-        <h2>Schedule a Call</h2>
-        <form onSubmit={handleSubmit}>
-          <label>Date</label>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
-
-          <label>Time</label>
-          <input type="time" value={time} onChange={(e) => setTime(e.target.value)} required />
-
-          <label>Additional Notes (Optional)</label>
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows="4"
-            placeholder="E.g. Legal topic, preferred language"
-          />
-
-          <button type="submit">Book Call</button>
-        </form>
-      </div>
+    <div className="form-wrapper">
+      <h2>Schedule a Call</h2>
+      <input name="name" placeholder="Your Name" value={form.name} onChange={handleChange} />
+      <input name="email" placeholder="Email" value={form.email} onChange={handleChange} />
+      <input name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} />
+      <input type="date" name="date" value={form.date} onChange={handleChange} />
+      <input type="time" name="time" value={form.time} onChange={handleChange} />
+      <textarea name="reason" placeholder="Reason (optional)" value={form.reason} onChange={handleChange} />
+      <button onClick={handleSubmit}>Submit</button>
+      {success && <p style={{ color: 'green' }}>✅ Call Scheduled Successfully!</p>}
     </div>
   );
 }

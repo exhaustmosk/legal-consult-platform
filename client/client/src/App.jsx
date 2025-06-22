@@ -1,15 +1,18 @@
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
+
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import PaymentPage from './pages/PaymentPage';
 import MessageForm from './pages/MessageForm';
-import LoginPage from './pages/LoginPage';
+import LoginPage from './pages/LoginPage'; // 👈 shared login
 import AdminMessages from './pages/AdminMessages';
 import TransactionHistory from './pages/Transactionhistory';
 import CallScheduleForm from './pages/CallScheduleForm';
+import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
-
+import PrivateRoute from './components/PrivateRoute'; // 👈 protected route wrapper
+import AdminCalls from './pages/AdminCalls';
 import './styles/theme.css';
 
 function App() {
@@ -18,11 +21,13 @@ function App() {
   const dropdownRef = useRef();
   const navigate = useNavigate();
 
+  // Load logged-in user from localStorage
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('authUser'));
     if (saved) setUser(saved);
   }, []);
 
+  // Hide dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -67,6 +72,7 @@ function App() {
                   <>
                     <Link to="/admin-dashboard">Dashboard</Link>
                     <Link to="/admin-messages">View Messages</Link>
+                    <Link to="/admin-calls">View Calls</Link> {/* ✅ NEW */}
                   </>
                 )}
                 <button onClick={handleLogout}>Logout</button>
@@ -76,6 +82,7 @@ function App() {
         )}
       </header>
 
+      {/* Nav bar for logged-in user */}
       {user?.type === 'user' && (
         <nav className="main-nav user-tabs">
           <Link to="/">Home Page</Link>
@@ -86,6 +93,7 @@ function App() {
         </nav>
       )}
 
+      {/* Nav bar for not logged-in users */}
       {!user && (
         <nav className="main-nav">
           <Link to="/user-login">User Login</Link>
@@ -95,16 +103,78 @@ function App() {
 
       <main className="main-content">
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/user-login" element={<LoginPage type="user" setUser={setUser} />} />
           <Route path="/admin-login" element={<LoginPage type="admin" setUser={setUser} />} />
-          <Route path="/user-dashboard" element={<UserDashboard />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/payment" element={<PaymentPage />} />
-          <Route path="/message-form" element={<MessageForm />} />
-          <Route path="/admin-messages" element={<AdminMessages />} />
-          <Route path="/transaction-history" element={<TransactionHistory />} />
-          <Route path="/call-scheduler" element={<CallScheduleForm />} />
+
+          {/* Protected Routes */}
+          <Route
+            path="/user-dashboard"
+            element={
+              <PrivateRoute allowedType="user">
+                <UserDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard"
+            element={
+              <PrivateRoute allowedType="admin">
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/payment"
+            element={
+              <PrivateRoute allowedType="user">
+                <PaymentPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/message-form"
+            element={
+              <PrivateRoute allowedType="user">
+                <MessageForm user= {user} />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-messages"
+            element={
+              <PrivateRoute allowedType="admin">
+                <AdminMessages />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/transaction-history"
+            element={
+              <PrivateRoute allowedType="user">
+                <TransactionHistory />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/call-scheduler"
+            element={
+              <PrivateRoute allowedType="user">
+                <CallScheduleForm />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-calls"
+            element={
+              <PrivateRoute allowedType="admin">
+                <AdminCalls />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </main>
     </div>

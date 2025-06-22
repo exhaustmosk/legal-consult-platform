@@ -1,19 +1,37 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 import '../styles/theme.css'
 
-const mockMessages = [
-  { id: 1, email: 'user1@example.com', message: 'I need help with property dispute.', time: '2025-06-02 10:15 AM' },
-  { id: 2, email: 'user2@example.com', message: 'What is the process of filing a PIL?', time: '2025-06-02 10:30 AM' },
-  { id: 3, email: 'user3@example.com', message: 'Can I get bail before arrest?', time: '2025-06-02 10:45 AM' }
-]
-
 function AdminMessages() {
-  const [messages, setMessages] = useState(mockMessages)
+  const [messages, setMessages] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/messages')
+      .then(res => {
+        if (res.data.success) {
+          const formatted = res.data.messages.map((msg, idx) => ({
+            id: msg._id,
+            email: msg.email,
+            message: msg.message,
+            time: new Date(msg.timestamp).toLocaleString()
+          }))
+          setMessages(formatted)
+        }
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error('Error fetching messages:', err)
+        setLoading(false)
+      })
+  }, [])
 
   return (
     <div className="admin-messages">
       <h2>User Messages 📨</h2>
-      {messages.length === 0 ? (
+      {loading ? (
+        <p>Loading messages...</p>
+      ) : messages.length === 0 ? (
         <p>No messages yet.</p>
       ) : (
         <ul className="message-list">

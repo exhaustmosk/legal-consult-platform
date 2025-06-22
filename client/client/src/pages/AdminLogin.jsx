@@ -1,49 +1,39 @@
-import { useState } from 'react'
-import { users } from '../mockUsers'
-import { useNavigate } from 'react-router-dom'
-import '../styles/theme.css'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../styles/theme.css';
 
 function AdminLogin() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const navigate = useNavigate()
+  const [email, setEmail] = useState('');
+  const [pass, setPass] = useState('');
+  const [err, setErr] = useState('');
+  const nav = useNavigate();
 
-  const handleLogin = () => {
-    const found = users.find(u => u.type === 'admin' && u.email === email && u.password === password)
-    if (found) {
-      navigate('/admin-dashboard')
+  const handle = async () => {
+    const res = await fetch('http://localhost:5000/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass }),
+    });
+    const d = await res.json();
+    if (d.success && d.isAdmin) {
+      localStorage.setItem('authAdmin', JSON.stringify(d.user));
+      nav('/admin-dashboard');
     } else {
-      setError('Invalid credentials')
+      setErr('Invalid admin credentials');
     }
-  }
+  };
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
         <h2 style={styles.title}>Admin Login</h2>
-
-        <input
-          type="text"
-          placeholder="Email"
-          style={styles.input}
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          style={styles.input}
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
-
-        <button onClick={handleLogin} style={styles.button}>Login</button>
-
-        {error && <p style={styles.error}>{error}</p>}
+        <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" style={styles.input} />
+        <input type="password" value={pass} onChange={e => setPass(e.target.value)} placeholder="Password" style={styles.input} />
+        <button onClick={handle} style={styles.button}>Login</button>
+        {err && <p style={styles.error}>{err}</p>}
       </div>
     </div>
-  )
+  );
 }
 
 const styles = {
@@ -88,6 +78,6 @@ const styles = {
     color: 'var(--error-red)',
     marginTop: '10px',
   },
-}
+};
 
-export default AdminLogin
+export default AdminLogin;
