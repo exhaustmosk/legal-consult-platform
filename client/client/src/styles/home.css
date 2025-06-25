@@ -1,0 +1,266 @@
+.homepage-container {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #1e3c72, #2a5298);
+  color: white;
+  padding: 40px 20px;
+}
+
+.intro-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+.intro-content {
+  max-width: 500px;
+}
+
+.intro-content h1 {
+  font-size: 2.8rem;
+  margin-bottom: 20px;
+}
+
+.intro-content p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+.home-login-button {
+  padding: 12px 24px;
+  background-color: #fff;
+  color: #1e3c72;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.home-login-button:hover {
+  background-color: #f0f0f0;
+}
+
+.homepage-img {
+  width: 400px;
+  max-width: 90%;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+.about-section,
+.services-section,
+.how-it-works-section,
+.why-us-section {
+  max-width: 800px;
+  margin: 50px auto;
+  text-align: center;
+}
+
+.about-section h2,
+.services-section h2,
+.how-it-works-section h2,
+.why-us-section h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.about-section p,
+.why-us-section p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.services-section ul,
+.how-it-works-section ol {
+  text-align: left;
+  margin: 0 auto;
+  max-width: 600px;
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.footer {
+  text-align: center;
+  padding: 30px 0;
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 60px;
+}
+
+.footer a {
+  color: #ffd;
+  text-decoration: underline;
+}
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  padding: 10px 15px;
+  background-color: #ffffffdd;
+  color: #1e3c72;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  z-index: 1000;
+  transition: background-color 0.3s;
+}
+
+.scroll-to-top:hover {
+  background-color: #ffffff;
+}
+
+.homepage-modern {
+  font-family: 'Segoe UI', sans-serif;
+  color: #222;
+  background: linear-gradient(to right, #f0f8ff, #ffffff);
+}
+
+.hero-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5rem 8%;
+  gap: 2rem;
+  animation: fadeInUp 0.6s ease;
+}
+
+.hero-content {
+  max-width: 50%;
+}
+
+.hero-content h1 {
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.cta-button {
+  background-color: #0077cc;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s;
+}
+.cta-button:hover {
+  background-color: #005fa3;
+}
+
+.hero-image img {
+  max-width: 500px;
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.highlight-section {
+  padding: 4rem 8%;
+  text-align: center;
+  
+}
+
+.highlight-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.highlight-card {
+  background: #e3f2fd;
+  padding: 1.5rem 2rem;
+  border-radius: 10px;
+  min-width: 180px;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.services-section-modern {
+  padding: 4rem 8%;
+  background: linear-gradient(to right, #f0f8ff, #ffffff);
+  text-align: center;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.service-card {
+  background: #fffbe6;
+  border: 1px solid #ffeb3b;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  transition: 0.3s;
+}
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+}
+.service-card h3 {
+  margin-top: 0.5rem;
+}
+
+.how-it-works-animated {
+  padding: 4rem 8%;
+  background: linear-gradient(to right, #f0f8ff, #ffffff);
+}
+.how-it-works-animated ol {
+  list-style: none;
+  padding-left: 0;
+  font-size: 1.1rem;
+}
+.how-it-works-animated li {
+  margin-bottom: 1rem;
+  position: relative;
+  padding-left: 1.2rem;
+}
+
+.modern-footer {
+  background: #1e1e2f;
+  color: white;
+  padding: 2rem 8%;
+  text-align: center;
+}
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  width: 42px;
+  height: 42px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}

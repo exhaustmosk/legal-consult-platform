@@ -5,14 +5,17 @@ import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import PaymentPage from './pages/PaymentPage';
 import MessageForm from './pages/MessageForm';
-import LoginPage from './pages/LoginPage'; // 👈 shared login
+import LoginPage from './pages/LoginPage';
 import AdminMessages from './pages/AdminMessages';
 import TransactionHistory from './pages/Transactionhistory';
 import CallScheduleForm from './pages/CallScheduleForm';
 import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
-import PrivateRoute from './components/PrivateRoute'; // 👈 protected route wrapper
+import PrivateRoute from './components/PrivateRoute';
 import AdminCalls from './pages/AdminCalls';
+import logo from './assets/logo.png';
+import UserProfile from './pages/UserProfile';
+
 import './styles/theme.css';
 
 function App() {
@@ -21,13 +24,11 @@ function App() {
   const dropdownRef = useRef();
   const navigate = useNavigate();
 
-  // Load logged-in user from localStorage
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('authUser'));
     if (saved) setUser(saved);
   }, []);
 
-  // Hide dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -47,7 +48,12 @@ function App() {
   return (
     <div className="app-wrapper">
       <header className="top-strip">
-        <h1>Legal Consultation</h1>
+        <img
+          src={logo}
+          alt="Legal Consultation Logo"
+          className="logo-img"
+          onClick={() => navigate('/')}
+        />
 
         {user && (
           <div className="profile-wrapper" ref={dropdownRef}>
@@ -61,18 +67,16 @@ function App() {
               <div className="profile-dropdown">
                 {user.type === 'user' && (
                   <>
-                    <Link to="/user-dashboard">Dashboard</Link>
-                    <Link to="/payment">Payment History</Link>
-                    <Link to="/transaction-history">Transactions</Link>
-                    <Link to="/message-form">Messages</Link>
-                    <Link to="/call-scheduler">Schedule Call</Link>
+                  <Link to="/user-profile">Profile</Link>
+                    <Link to="/user-dashboard">Booking</Link>
+                    
                   </>
                 )}
                 {user.type === 'admin' && (
                   <>
                     <Link to="/admin-dashboard">Dashboard</Link>
                     <Link to="/admin-messages">View Messages</Link>
-                    <Link to="/admin-calls">View Calls</Link> {/* ✅ NEW */}
+                    <Link to="/admin-calls">View Calls</Link>
                   </>
                 )}
                 <button onClick={handleLogout}>Logout</button>
@@ -88,8 +92,6 @@ function App() {
           <Link to="/">Home Page</Link>
           <Link to="/user-dashboard">Bookings</Link>
           <Link to="/transaction-history">Transactions</Link>
-          <Link to="/message-form">Messages</Link>
-          <Link to="/call-scheduler">Call</Link>
         </nav>
       )}
 
@@ -108,6 +110,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/user-login" element={<LoginPage type="user" setUser={setUser} />} />
           <Route path="/admin-login" element={<LoginPage type="admin" setUser={setUser} />} />
+          <Route path="/login/user" element={<LoginPage type="user" setUser={setUser} />} />
 
           {/* Protected Routes */}
           <Route
@@ -118,6 +121,15 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/user-profile"
+            element={
+              <PrivateRoute allowedType="user">
+                <UserProfile />
+              </PrivateRoute>
+            }
+          />
+
           <Route
             path="/admin-dashboard"
             element={
@@ -138,18 +150,16 @@ function App() {
             path="/message-form"
             element={
               <PrivateRoute allowedType="user">
-                <MessageForm user= {user} />
+                <MessageForm user={user} />
               </PrivateRoute>
             }
           />
-          <Route
-            path="/admin-messages"
-            element={
-              <PrivateRoute allowedType="admin">
-                <AdminMessages />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/call-scheduler" element={
+  <PrivateRoute allowedType="user">
+    <CallScheduleForm />
+  </PrivateRoute>
+} />
+
           <Route
             path="/transaction-history"
             element={
@@ -158,12 +168,11 @@ function App() {
               </PrivateRoute>
             }
           />
-
           <Route
-            path="/call-scheduler"
+            path="/admin-messages"
             element={
-              <PrivateRoute allowedType="user">
-                <CallScheduleForm />
+              <PrivateRoute allowedType="admin">
+                <AdminMessages />
               </PrivateRoute>
             }
           />

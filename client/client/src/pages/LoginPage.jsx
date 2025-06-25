@@ -23,14 +23,18 @@ function LoginPage({ type, setUser }) {
       const data = await res.json();
 
       if (data.success) {
-        // ✅ Store full user object (with name & email)
-        const loggedInUser = data.user;
-        if (setUser) setUser(loggedInUser);
-        localStorage.setItem('authUser', JSON.stringify(loggedInUser));
-
-        // ✅ Navigate to dashboard
-        navigate(type === 'admin' ? '/admin-dashboard' : '/user-dashboard');
-      } else {
+       const loggedInUser = data.user;
+       if (setUser) setUser(loggedInUser);
+            
+       // ✅ Store entire user object
+       localStorage.setItem('authUser', JSON.stringify(loggedInUser));
+            
+       // ✅ Also store just the user email (for Razorpay, etc.)
+       localStorage.setItem('userEmail', loggedInUser.email);
+            
+       navigate(type === 'admin' ? '/admin-dashboard' : '/user-dashboard');
+      }
+ else {
         setError(data.message || 'Invalid credentials');
       }
     } catch (err) {

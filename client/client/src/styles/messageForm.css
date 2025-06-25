@@ -1,0 +1,115 @@
+.msg-page {
+  max-width: 750px;
+  margin: 40px auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  color: #1c1c1c;
+}
+
+.msg-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.msg-header h2 {
+  color: #0077cc;
+  font-size: 28px;
+}
+
+.msg-header p {
+  color: #444;
+  font-size: 16px;
+}
+
+.msg-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.msg-textarea {
+  padding: 1rem;
+  font-size: 16px;
+  height: 180px;
+  border-radius: 10px;
+  border: 2px solid #0077cc;
+  resize: vertical;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.msg-textarea:focus {
+  border-color: #005fa3;
+  box-shadow: 0 0 5px rgba(0, 119, 204, 0.3);
+}
+
+.msg-error {
+  color: #e63946;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.msg-success {
+  color: #2e7d32;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.msg-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+.msg-submit-btn {
+  background-color: #0077cc;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.msg-submit-btn:hover {
+  background-color: #005fa3;
+}
+
+.msg-back-btn {
+  background-color: #f5f5f5;
+  color: #333;
+  padding: 12px 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.msg-back-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.msg-assurance {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ddd;
+}
+
+.msg-assurance h4 {
+  color: #0077cc;
+  margin-bottom: 0.5rem;
+}
+
+.msg-assurance ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.msg-assurance li {
+  margin-bottom: 0.5rem;
+  font-size: 15px;
+}

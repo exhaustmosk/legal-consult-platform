@@ -1,51 +1,40 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import '../styles/theme.css';
+import '../styles/userDashboard.css';
 
 function UserDashboard() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleMessageClick = () => {
-    navigate('/payment?type=message')
-  }
+    navigate('/message-form'); // ✅ updated
+  };
 
   const handleCallClick = () => {
-    navigate('/payment?type=call')
-  }
+    navigate('/call-scheduler'); // ✅ updated
+  };
 
   return (
-    <div style={styles.container}>
-      <h2>Welcome, User! 👤</h2>
-      <p>Select your consultation mode:</p>
+    <div className="user-dashboard">
+      <section className="dashboard-hero">
+        <h2>Welcome Back!</h2>
+        <p>How would you like to consult with our legal experts today?</p>
+      </section>
 
-      <div style={styles.buttonContainer}>
-        <button onClick={handleMessageClick} style={styles.button}>
-          ✉️ Message (₹49)
-        </button>
+      <section className="dashboard-options">
+        <div className="dashboard-card" onClick={handleMessageClick}>
+          <h3>✉️ Message</h3>
+          <p>₹49 only</p>
+          <p>Ask your queries regarding legal issues, document review /drafting and get replies within hours</p>
+        </div>
 
-        <button onClick={handleCallClick} style={styles.button}>
-          📞 Call (₹99 for 5 min)
-        </button>
-      </div>
+        <div className="dashboard-card" onClick={handleCallClick}>
+          <h3>📞 Call</h3>
+          <p>₹99 for 5 min</p>
+          <p>Speak directly with a legal advisor over a short call</p>
+        </div>
+      </section>
     </div>
-  )
+  );
 }
 
-const styles = {
-  container: {
-    textAlign: 'center',
-    marginTop: '50px'
-  },
-  buttonContainer: {
-    marginTop: '20px'
-  },
-  button: {
-    padding: '12px 20px',
-    fontSize: '16px',
-    margin: '10px',
-    borderRadius: '8px',
-    border: '1px solid #444',
-    backgroundColor: '#f0f0f0',
-    cursor: 'pointer'
-  }
-}
-
-export default UserDashboard
+export default UserDashboard;

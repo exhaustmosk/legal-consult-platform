@@ -1,50 +1,70 @@
-// src/pages/TransactionHistory.jsx
-import { useEffect, useState } from 'react'
-import '../styles/theme.css'
-
-const mockTransactions = [
-  { id: 1, type: 'Message', amount: 49, date: '2025-06-01' },
-  { id: 2, type: 'Call', amount: 99, date: '2025-06-03' },
-  { id: 3, type: 'Message', amount: 49, date: '2025-06-05' }
-]
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import '../styles/theme.css';
+import '../styles/transactionHistory.css';
 
 function TransactionHistory() {
-  const [transactions, setTransactions] = useState([])
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    // Simulate API fetch
-    setTransactions(mockTransactions)
-  }, [])
+    const fetchHistory = async () => {
+      const user = JSON.parse(localStorage.getItem('authUser'));
+      if (!user || !user.email) {
+        setError('User not found.');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await axios.get(`http://localhost:5000/api/transactions?email=${user.email}`);
+        setTransactions(res.data.transactions || []);
+      } catch (err) {
+        setError('Failed to load transactions.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHistory();
+  }, []);
 
   return (
-    <div className="dashboard-page">
-      <h2 className="dashboard-heading">Transaction History</h2>
-      {transactions.length === 0 ? (
-        <p>No transactions found.</p>
-      ) : (
-        <table className="transaction-table">
+    <div className="history-container">
+      <h2>🧾 Your Transaction History</h2>
+
+      {loading && <p>Loading...</p>}
+      {error && <p className="error-text">{error}</p>}
+
+      {!loading && transactions.length === 0 && <p>No transactions yet.</p>}
+
+      {!loading && transactions.length > 0 && (
+        <table className="history-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Type</th>
-              <th>Amount (₹)</th>
+              <th>#</th>
+              <th>Service</th>
+              <th>Amount</th>
+              <th>Payment ID</th>
               <th>Date</th>
             </tr>
           </thead>
           <tbody>
-            {transactions.map(t => (
-              <tr key={t.id}>
-                <td>{t.id}</td>
-                <td>{t.type}</td>
-                <td>{t.amount}</td>
-                <td>{t.date}</td>
+            {transactions.map((txn, idx) => (
+              <tr key={txn.paymentId}>
+                <td>{idx + 1}</td>
+                <td>{txn.type === 'message' ? 'Message' : 'Call'}</td>
+                <td>₹{txn.amount}</td>
+                <td>{txn.paymentId}</td>
+                <td>{new Date(txn.timestamp).toLocaleString()}</td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
     </div>
-  )
+  );
 }
 
-export default TransactionHistory
+export default TransactionHistory;

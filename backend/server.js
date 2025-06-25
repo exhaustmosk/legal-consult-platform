@@ -1,16 +1,17 @@
-require('dotenv').config(); // ✅ Load environment variables
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
 const { MongoClient, ObjectId } = require('mongodb');
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// ✅ Use environment variables
 const PORT = process.env.PORT || 5000;
 const mongoUrl = process.env.MONGO_URI;
 const client = new MongoClient(mongoUrl, { useUnifiedTopology: true });
@@ -18,6 +19,7 @@ const client = new MongoClient(mongoUrl, { useUnifiedTopology: true });
 let usersCollection;
 let callsCollection;
 let messagesCollection;
+let paymentsCollection;
 
 client.connect()
   .then(() => {
@@ -25,12 +27,13 @@ client.connect()
     usersCollection = db.collection('users');
     callsCollection = db.collection('calls');
     messagesCollection = db.collection('messages');
+    paymentsCollection = db.collection('payments');
     console.log('✅ MongoDB connected');
     app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
   })
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
-// 🔐 OTP logic
+// 🔐 OTP
 const otpStore = new Map();
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -48,8 +51,20 @@ async function sendOtpEmail(email, otp) {
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to: email,
-    subject: 'Your OTP Code',
-    text: `Your OTP code is: ${otp}`,
+    subject: 'Your OTP Code for Legal Consultation',
+    text: `Hello,
+
+Thank you for choosing our legal consultation platform.
+
+🔐 Your One-Time Password (OTP) is:${otp}
+
+This OTP is valid for the next 10 minutes. Please do not share it with anyone for security reasons.
+
+If you didn’t request this, please ignore this message.
+
+—
+Legal Consultation Team
+`,
   });
 }
 
@@ -80,14 +95,12 @@ app.post('/api/verify-otp', (req, res) => {
   }
 });
 
-// 👤 Registration
+// 👤 Register
 app.post('/api/register', async (req, res) => {
   const { name, email, phone, password } = req.body;
   try {
     const existing = await usersCollection.findOne({ email });
-    if (existing) {
-      return res.json({ success: false, message: 'Email already exists' });
-    }
+    if (existing) return res.json({ success: false, message: 'Email already exists' });
 
     const hash = await bcrypt.hash(password, 10);
     await usersCollection.insertOne({ name, email, phone, password: hash, type: 'user' });
@@ -109,13 +122,9 @@ app.post('/api/login', async (req, res) => {
 
   if (type === 'admin') {
     if (email === ADMIN.email && password === ADMIN.password) {
-      return res.json({
-        success: true,
-        user: { name: 'Admin', email, type: 'admin' }
-      });
-    } else {
-      return res.status(401).json({ success: false, message: 'Invalid admin credentials' });
+      return res.json({ success: true, user: { name: 'Admin', email, type: 'admin' } });
     }
+    return res.status(401).json({ success: false, message: 'Invalid admin credentials' });
   }
 
   if (type === 'user') {
@@ -123,11 +132,7 @@ app.post('/api/login', async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ success: false, message: 'Invalid user credentials' });
     }
-
-    return res.json({
-      success: true,
-      user: { name: user.name, email, type: 'user' }
-    });
+    return res.json({ success: true, user: { name: user.name, email, type: 'user' } });
   }
 
   return res.status(400).json({ success: false, message: 'Invalid login type' });
@@ -136,21 +141,12 @@ app.post('/api/login', async (req, res) => {
 // 📅 Schedule Call
 app.post('/api/schedule-call', async (req, res) => {
   const { name, email, phone, date, time, reason } = req.body;
-
   if (!name || !email || !phone || !date || !time) {
     return res.status(400).json({ success: false, message: 'Missing required fields' });
   }
 
   try {
-    await callsCollection.insertOne({
-      name,
-      email,
-      phone,
-      date,
-      time,
-      reason,
-      attended: false
-    });
+    await callsCollection.insertOne({ name, email, phone, date, time, reason, attended: false });
     res.json({ success: true });
   } catch (err) {
     console.error('❌ Error scheduling call:', err);
@@ -158,16 +154,7 @@ app.post('/api/schedule-call', async (req, res) => {
   }
 });
 
-// 📞 Admin view calls
-app.get('/api/scheduled-calls', async (req, res) => {
-  try {
-    const calls = await callsCollection.find({}).toArray();
-    res.json({ success: true, calls });
-  } catch {
-    res.status(500).json({ success: false });
-  }
-});
-
+// 📞 Admin calls
 app.get('/api/admin/calls', async (req, res) => {
   try {
     const calls = await callsCollection.find({}).toArray();
@@ -198,12 +185,7 @@ app.post('/api/messages', async (req, res) => {
   }
 
   try {
-    await messagesCollection.insertOne({
-      name,
-      email,
-      message,
-      timestamp: new Date()
-    });
+    await messagesCollection.insertOne({ name, email, message, timestamp: new Date() });
     res.json({ success: true });
   } catch {
     res.status(500).json({ success: false });
@@ -220,7 +202,87 @@ app.get('/api/messages', async (req, res) => {
   }
 });
 
-// 👋 Fallback
+// 💳 Razorpay Integration
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_SECRET,
+});
+
+// 1️⃣ Create Razorpay order
+app.post('/api/create-order', async (req, res) => {
+  const { amount } = req.body;
+
+  try {
+    const order = await razorpay.orders.create({
+      amount: amount * 100,
+      currency: 'INR',
+      receipt: `rcpt_${Date.now()}`,
+    });
+    res.json({ success: true, order });
+  } catch (err) {
+    console.error('❌ Order creation failed:', err);
+    res.status(500).json({ success: false });
+  }
+});
+
+// 2️⃣ Verify Razorpay signature
+app.post('/api/payment/verify', (req, res) => {
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+  const sign = `${razorpay_order_id}|${razorpay_payment_id}`;
+  const expected = crypto.createHmac('sha256', process.env.RAZORPAY_SECRET)
+    .update(sign)
+    .digest('hex');
+
+  if (expected === razorpay_signature) {
+    res.json({ success: true });
+  } else {
+    res.status(400).json({ success: false });
+  }
+});
+
+// 📊 All Payments (for Admin Dashboard)
+app.get('/api/payments', async (req, res) => {
+  try {
+    const payments = await paymentsCollection.find({}).toArray();
+    res.json({ success: true, payments });
+  } catch (err) {
+    console.error('❌ Error fetching all payments:', err);
+    res.status(500).json({ success: false });
+  }
+});
+
+// 3️⃣ Store successful payment
+app.post('/api/payment-success', async (req, res) => {
+  const { email, paymentId, amount, type } = req.body;
+  try {
+    await paymentsCollection.insertOne({
+      email,
+      paymentId,
+      amount,
+      type, // 👈 Ensure type is stored (call or message)
+      timestamp: new Date()
+    });
+    res.json({ success: true });
+  } catch {
+    res.status(500).json({ success: false });
+  }
+});
+
+// 🧾 Transaction history (user-specific)
+app.get('/api/transactions', async (req, res) => {
+  const { email } = req.query;
+  if (!email) return res.status(400).json({ success: false, message: 'Email required' });
+
+  try {
+    const transactions = await paymentsCollection.find({ email }).sort({ timestamp: -1 }).toArray();
+    res.json({ success: true, transactions });
+  } catch (err) {
+    console.error('❌ Error fetching transactions:', err);
+    res.status(500).json({ success: false });
+  }
+});
+
+// 👋 Default
 app.get('/', (req, res) => {
   res.send('🛡️ Legal Consultation API Running');
 });

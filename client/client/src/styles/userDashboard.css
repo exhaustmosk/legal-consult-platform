@@ -1,0 +1,58 @@
+.user-dashboard {
+  padding: 40px 5vw;
+  
+  min-height: 100vh;
+}
+
+.dashboard-hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.dashboard-hero h2 {
+  font-size: 2.2rem;
+  color: #004d99; /* rich blue */
+  margin-bottom: 10px;
+}
+
+.dashboard-hero p {
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.dashboard-options {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.dashboard-card {
+  background-color: #ffffff;
+  border: 2px solid #007bff; /* bright blue border */
+  border-radius: 12px;
+  padding: 24px 30px;
+  width: 280px;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
+  cursor: pointer;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-6px);
+  background-color: #fffde7; /* soft yellow on hover */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #007bff; /* blue heading */
+}
+
+.dashboard-card p {
+  font-size: 1rem;
+  color: #333;
+  margin: 5px 0;
+}

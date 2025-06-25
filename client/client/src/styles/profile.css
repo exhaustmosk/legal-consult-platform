@@ -1,0 +1,75 @@
+/* /styles/profile.css */
+
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 1rem;
+  background: linear-gradient(to right, #f5faff, #fefefe);
+  min-height: 80vh;
+}
+
+.profile-card {
+  background: white;
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  background-color: #0077cc;
+  color: white;
+  font-size: 2.4rem;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  box-shadow: 0 0 8px rgba(0, 119, 204, 0.25);
+}
+
+.profile-name {
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.profile-role {
+  font-size: 1rem;
+  background: #e6f2ff;
+  color: #005999;
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  margin-bottom: 1.2rem;
+}
+
+.profile-info div {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.profile-loading-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+}
+
+.profile-loader {
+  font-size: 1.2rem;
+  color: #888;
+}
+
+/* Smooth fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
