@@ -42,13 +42,11 @@ body, html {
 .login-page {
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Align to top instead of center */
+  align-items: flex-start; 
   height: 100vh;
-  padding-top: 4rem; /* Space from top */
-  /* background: linear-gradient(to right, #e0f7fa, #ffffff); */
+  padding-top: 4rem; 
 }
 
-/* Login Box Styling */
 .login-box {
   background-color: #f5faff;
   border: 2px solid #0077cc;
@@ -59,7 +57,6 @@ body, html {
   animation: fadeIn 0.6s ease-in-out;
 }
 
-/* Title */
 .login-title {
   text-align: center;
   margin-bottom: 1.5rem;
@@ -67,7 +64,6 @@ body, html {
   font-weight: bold;
 }
 
-/* Inputs */
 .login-input {
   width: 100%;
   padding: 0.75rem;
@@ -77,7 +73,6 @@ body, html {
   font-size: 1rem;
 }
 
-/* Button */
 .login-button {
   width: 100%;
   padding: 0.75rem;
@@ -94,7 +89,6 @@ body, html {
   background-color: #005fa3;
 }
 
-/* Error Message */
 .login-error {
   color: red;
   text-align: center;
@@ -530,15 +524,13 @@ html, body {
   scroll-behavior: smooth;
 }
 
-/* This wrapper limits width but makes it wider than default */
 .content-wrapper {
-  max-width: 1400px; /* Increased from 1080px */
+  max-width: 1400px; 
   margin: 0 auto;
   padding: 40px 40px;
   box-sizing: border-box;
 }
 
-/* Optional: scroll-to-top button */
 .scroll-to-top {
   position: fixed;
   bottom: 30px;

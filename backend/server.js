@@ -33,7 +33,7 @@ client.connect()
   })
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
-// 🔐 OTP
+
 const otpStore = new Map();
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -68,7 +68,6 @@ Legal Consultation Team
   });
 }
 
-// 📩 OTP routes
 app.post('/api/send-otp', async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ success: false });
@@ -95,7 +94,6 @@ app.post('/api/verify-otp', (req, res) => {
   }
 });
 
-// 👤 Register
 app.post('/api/register', async (req, res) => {
   const { name, email, phone, password } = req.body;
   try {
@@ -111,7 +109,6 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// 🔐 Login (admin + user)
 const ADMIN = {
   email: process.env.ADMIN_EMAIL,
   password: process.env.ADMIN_PASS,
@@ -138,7 +135,6 @@ app.post('/api/login', async (req, res) => {
   return res.status(400).json({ success: false, message: 'Invalid login type' });
 });
 
-// 📅 Schedule Call
 app.post('/api/schedule-call', async (req, res) => {
   const { name, email, phone, date, time, reason } = req.body;
   if (!name || !email || !phone || !date || !time) {
@@ -154,7 +150,6 @@ app.post('/api/schedule-call', async (req, res) => {
   }
 });
 
-// 📞 Admin calls
 app.get('/api/admin/calls', async (req, res) => {
   try {
     const calls = await callsCollection.find({}).toArray();
@@ -177,7 +172,6 @@ app.post('/api/admin/calls/mark-attended', async (req, res) => {
   }
 });
 
-// 📨 Send message
 app.post('/api/messages', async (req, res) => {
   const { name, email, message } = req.body;
   if (!name || !email || !message) {
@@ -192,7 +186,6 @@ app.post('/api/messages', async (req, res) => {
   }
 });
 
-// 📬 Admin view messages
 app.get('/api/messages', async (req, res) => {
   try {
     const messages = await messagesCollection.find({}).toArray();
@@ -202,13 +195,11 @@ app.get('/api/messages', async (req, res) => {
   }
 });
 
-// 💳 Razorpay Integration
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_SECRET,
 });
 
-// 1️⃣ Create Razorpay order
 app.post('/api/create-order', async (req, res) => {
   const { amount } = req.body;
 
@@ -225,7 +216,6 @@ app.post('/api/create-order', async (req, res) => {
   }
 });
 
-// 2️⃣ Verify Razorpay signature
 app.post('/api/payment/verify', (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
   const sign = `${razorpay_order_id}|${razorpay_payment_id}`;
@@ -240,7 +230,6 @@ app.post('/api/payment/verify', (req, res) => {
   }
 });
 
-// 📊 All Payments (for Admin Dashboard)
 app.get('/api/payments', async (req, res) => {
   try {
     const payments = await paymentsCollection.find({}).toArray();
@@ -251,7 +240,6 @@ app.get('/api/payments', async (req, res) => {
   }
 });
 
-// 3️⃣ Store successful payment
 app.post('/api/payment-success', async (req, res) => {
   const { email, paymentId, amount, type } = req.body;
   try {
@@ -259,7 +247,7 @@ app.post('/api/payment-success', async (req, res) => {
       email,
       paymentId,
       amount,
-      type, // 👈 Ensure type is stored (call or message)
+      type,
       timestamp: new Date()
     });
     res.json({ success: true });
@@ -268,7 +256,6 @@ app.post('/api/payment-success', async (req, res) => {
   }
 });
 
-// 🧾 Transaction history (user-specific)
 app.get('/api/transactions', async (req, res) => {
   const { email } = req.query;
   if (!email) return res.status(400).json({ success: false, message: 'Email required' });
@@ -282,7 +269,7 @@ app.get('/api/transactions', async (req, res) => {
   }
 });
 
-// 👋 Default
+
 app.get('/', (req, res) => {
   res.send('🛡️ Legal Consultation API Running');
 });

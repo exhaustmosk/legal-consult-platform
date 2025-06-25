@@ -7,7 +7,7 @@ import PaymentPage from './pages/PaymentPage';
 import MessageForm from './pages/MessageForm';
 import LoginPage from './pages/LoginPage';
 import AdminMessages from './pages/AdminMessages';
-import TransactionHistory from './pages/Transactionhistory';
+import TransactionHistory from './pages/TransactionHistory';
 import CallScheduleForm from './pages/CallScheduleForm';
 import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
