@@ -21,6 +21,7 @@ let callsCollection;
 let messagesCollection;
 let paymentsCollection;
 
+// Connect to MongoDB
 client.connect()
   .then(() => {
     const db = client.db('legal_consultation');
@@ -33,7 +34,7 @@ client.connect()
   })
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
-
+// Email OTP setup
 const otpStore = new Map();
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -56,18 +57,18 @@ async function sendOtpEmail(email, otp) {
 
 Thank you for choosing our legal consultation platform.
 
-🔐 Your One-Time Password (OTP) is:${otp}
+🔐 Your One-Time Password (OTP) is: ${otp}
 
 This OTP is valid for the next 10 minutes. Please do not share it with anyone for security reasons.
 
 If you didn’t request this, please ignore this message.
 
 —
-Legal Consultation Team
-`,
+Legal Consultation Team`
   });
 }
 
+// OTP routes
 app.post('/api/send-otp', async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ success: false });
@@ -94,6 +95,7 @@ app.post('/api/verify-otp', (req, res) => {
   }
 });
 
+// Registration route
 app.post('/api/register', async (req, res) => {
   const { name, email, phone, password } = req.body;
   try {
@@ -109,11 +111,13 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
+// Admin login (from .env)
 const ADMIN = {
   email: process.env.ADMIN_EMAIL,
   password: process.env.ADMIN_PASS,
 };
 
+// Login route
 app.post('/api/login', async (req, res) => {
   const { email, password, type } = req.body;
 
@@ -135,6 +139,7 @@ app.post('/api/login', async (req, res) => {
   return res.status(400).json({ success: false, message: 'Invalid login type' });
 });
 
+// Call scheduling
 app.post('/api/schedule-call', async (req, res) => {
   const { name, email, phone, date, time, reason } = req.body;
   if (!name || !email || !phone || !date || !time) {
@@ -150,6 +155,7 @@ app.post('/api/schedule-call', async (req, res) => {
   }
 });
 
+// Admin view calls
 app.get('/api/admin/calls', async (req, res) => {
   try {
     const calls = await callsCollection.find({}).toArray();
@@ -159,6 +165,7 @@ app.get('/api/admin/calls', async (req, res) => {
   }
 });
 
+// Mark call attended
 app.post('/api/admin/calls/mark-attended', async (req, res) => {
   const { callId, attended } = req.body;
   try {
@@ -172,6 +179,7 @@ app.post('/api/admin/calls/mark-attended', async (req, res) => {
   }
 });
 
+// Message form
 app.post('/api/messages', async (req, res) => {
   const { name, email, message } = req.body;
   if (!name || !email || !message) {
@@ -186,6 +194,7 @@ app.post('/api/messages', async (req, res) => {
   }
 });
 
+// Admin fetch messages
 app.get('/api/messages', async (req, res) => {
   try {
     const messages = await messagesCollection.find({}).toArray();
@@ -195,11 +204,13 @@ app.get('/api/messages', async (req, res) => {
   }
 });
 
+// Razorpay config
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_SECRET,
 });
 
+// Create payment order
 app.post('/api/create-order', async (req, res) => {
   const { amount } = req.body;
 
@@ -216,6 +227,7 @@ app.post('/api/create-order', async (req, res) => {
   }
 });
 
+// Payment verification
 app.post('/api/payment/verify', (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
   const sign = `${razorpay_order_id}|${razorpay_payment_id}`;
@@ -230,16 +242,7 @@ app.post('/api/payment/verify', (req, res) => {
   }
 });
 
-app.get('/api/payments', async (req, res) => {
-  try {
-    const payments = await paymentsCollection.find({}).toArray();
-    res.json({ success: true, payments });
-  } catch (err) {
-    console.error('❌ Error fetching all payments:', err);
-    res.status(500).json({ success: false });
-  }
-});
-
+// Save successful payment
 app.post('/api/payment-success', async (req, res) => {
   const { email, paymentId, amount, type } = req.body;
   try {
@@ -256,6 +259,18 @@ app.post('/api/payment-success', async (req, res) => {
   }
 });
 
+// Admin view all payments
+app.get('/api/payments', async (req, res) => {
+  try {
+    const payments = await paymentsCollection.find({}).toArray();
+    res.json({ success: true, payments });
+  } catch (err) {
+    console.error('❌ Error fetching all payments:', err);
+    res.status(500).json({ success: false });
+  }
+});
+
+// User-specific transaction history
 app.get('/api/transactions', async (req, res) => {
   const { email } = req.query;
   if (!email) return res.status(400).json({ success: false, message: 'Email required' });
@@ -269,7 +284,7 @@ app.get('/api/transactions', async (req, res) => {
   }
 });
 
-
+// API root
 app.get('/', (req, res) => {
   res.send('🛡️ Legal Consultation API Running');
 });
