@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/theme.css';
 
@@ -9,6 +9,17 @@ function LoginPage({ type, setUser }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // 🔁 Auto-scroll to login box when this page loads
+  useEffect(() => {
+    const box = document.getElementById('login-box');
+    if (box) {
+      box.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }, []);
+
   const handleLogin = async () => {
     setLoading(true);
     setError('');
@@ -17,24 +28,25 @@ function LoginPage({ type, setUser }) {
       const res = await fetch('http://localhost:5000/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim().toLowerCase(), password, type })
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          password,
+          type,
+        }),
       });
 
       const data = await res.json();
 
       if (data.success) {
-       const loggedInUser = data.user;
-       if (setUser) setUser(loggedInUser);
-            
-       // ✅ Store entire user object
-       localStorage.setItem('authUser', JSON.stringify(loggedInUser));
-            
-       // ✅ Also store just the user email (for Razorpay, etc.)
-       localStorage.setItem('userEmail', loggedInUser.email);
-            
-       navigate(type === 'admin' ? '/admin-dashboard' : '/user-dashboard');
-      }
- else {
+        const loggedInUser = data.user;
+        if (setUser) setUser(loggedInUser);
+
+        // ✅ Save user info locally
+        localStorage.setItem('authUser', JSON.stringify(loggedInUser));
+        localStorage.setItem('userEmail', loggedInUser.email);
+
+        navigate(type === 'admin' ? '/admin-dashboard' : '/user-dashboard');
+      } else {
         setError(data.message || 'Invalid credentials');
       }
     } catch (err) {
@@ -47,8 +59,10 @@ function LoginPage({ type, setUser }) {
   return (
     <div className="login-page">
       <div className="login-container">
-        <div className="login-box">
-          <h2 className="login-title">{type === 'admin' ? 'Admin Login' : 'User Login'}</h2>
+        <div className="login-box" id="login-box">
+          <h2 className="login-title">
+            {type === 'admin' ? 'Admin Login' : 'User Login'}
+          </h2>
 
           <input
             type="text"

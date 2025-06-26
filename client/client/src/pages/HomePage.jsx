@@ -99,7 +99,7 @@ function HomePage() {
 
       {/* 🔹 Footer */}
       <footer className="modern-footer">
-        <p>© {new Date().getFullYear()} Legal Consultation. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Samadhan Hub. All rights reserved.</p>
         <p>
           Need help? <a href="mailto:samadhanhub@gmail.com">Contact Support</a>
         </p>
