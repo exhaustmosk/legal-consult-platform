@@ -40,7 +40,7 @@ function HomePage() {
             to={isUserLoggedIn ? '/user-dashboard' : '/login/user'}
             className="cta-button"
           >
-            {isUserLoggedIn ? '📅 Book Your Appointment' : 'Login / Get Started'}
+            {isUserLoggedIn ? '📅 Book Your Appointment' : 'Login'}
           </Link>
         </div>
         <div className="hero-image">
