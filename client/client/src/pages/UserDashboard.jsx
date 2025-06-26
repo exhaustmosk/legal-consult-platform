@@ -1,9 +1,15 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/theme.css';
 import '../styles/userDashboard.css';
 
 function UserDashboard() {
   const navigate = useNavigate();
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleMessageClick = () => {
     navigate('/message-form'); // ✅ updated
@@ -24,7 +30,7 @@ function UserDashboard() {
         <div className="dashboard-card" onClick={handleMessageClick}>
           <h3>✉️ Message</h3>
           <p>₹49 only</p>
-          <p>Ask your queries regarding legal issues, document review /drafting and get replies within hours</p>
+          <p>Ask your queries regarding legal issues, document review/drafting and get replies within hours</p>
         </div>
 
         <div className="dashboard-card" onClick={handleCallClick}>
