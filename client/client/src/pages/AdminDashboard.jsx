@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/theme.css'; // if needed
+import BASE_URL from '../config';
 
 function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -16,9 +17,9 @@ function AdminDashboard() {
     async function fetchStats() {
       try {
         const [msgRes, callRes, txnRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/messages'),
-          axios.get('http://localhost:5000/api/admin/calls'),
-          axios.get('http://localhost:5000/api/payments'),
+          axios.get(`${BASE_URL}/api/messages`),
+          axios.get(`${BASE_URL}/api/admin/calls`),
+          axios.get(`${BASE_URL}/api/payments`),
         ]);
 
         const messages = msgRes.data.messages?.length || 0;

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/theme.css';
 import '../styles/transactionHistory.css';
+import BASE_URL from '../config';
 
 function TransactionHistory() {
   const [transactions, setTransactions] = useState([]);
@@ -18,7 +19,7 @@ function TransactionHistory() {
       }
 
       try {
-        const res = await axios.get(`http://localhost:5000/api/transactions?email=${user.email}`);
+        const res = await axios.get(`${BASE_URL}/api/transactions?email=${user.email}`);
         setTransactions(res.data.transactions || []);
       } catch (err) {
         setError('Failed to load transactions.');

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import BASE_URL from '../config';
 const AdminCalls = () => {
   const [calls, setCalls] = useState([]);
 
@@ -10,7 +10,7 @@ const AdminCalls = () => {
 
   const fetchCalls = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/calls');
+      const res = await axios.get(`${BASE_URL}/api/admin/calls`);
       setCalls(res.data.calls);
     } catch (err) {
       console.error('Failed to fetch calls', err);
@@ -19,7 +19,7 @@ const AdminCalls = () => {
 
   const handleCheckboxChange = async (callId, currentStatus) => {
     try {
-      await axios.post('http://localhost:5000/api/admin/calls/mark-attended', {
+      await axios.post(`${BASE_URL}/api/admin/calls/mark-attended`, {
         callId,
         attended: !currentStatus
       });

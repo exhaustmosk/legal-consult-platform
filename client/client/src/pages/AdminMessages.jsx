@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import '../styles/theme.css'
+import BASE_URL from '../config';
 
 function AdminMessages() {
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/messages')
+    axios.get(`${BASE_URL}/api/messages`)
       .then(res => {
         if (res.data.success) {
           const formatted = res.data.messages.map((msg, idx) => ({

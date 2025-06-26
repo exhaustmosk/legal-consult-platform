@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/theme.css';
+import BASE_URL from '../config';
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -30,7 +31,7 @@ function RegisterPage() {
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/send-otp', {
+      const res = await fetch(`${BASE_URL}/api/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email }),
@@ -54,7 +55,7 @@ function RegisterPage() {
     setLoading(true);
     try {
       // First verify OTP
-      const verifyRes = await fetch('http://localhost:5000/api/verify-otp', {
+      const verifyRes = await fetch(`${BASE_URL}/api/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email, otp: enteredOtp }),
@@ -68,7 +69,7 @@ function RegisterPage() {
 
       // Now register
       const { confirmPassword, ...registerData } = formData;
-      const res = await fetch('http://localhost:5000/api/register', {
+      const res = await fetch(`${BASE_URL}/api/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(registerData),

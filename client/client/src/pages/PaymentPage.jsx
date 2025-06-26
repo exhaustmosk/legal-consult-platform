@@ -2,6 +2,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/payment.css';
+import BASE_URL from '../config';
 
 function PaymentPage() {
   const [params] = useSearchParams();
@@ -45,7 +46,7 @@ function PaymentPage() {
     }
 
     try {
-      const orderRes = await axios.post('http://localhost:5000/api/create-order', { amount });
+      const orderRes = await axios.post(`${BASE_URL}/api/create-order`, { amount });
       const { id: order_id, amount: razorAmount, currency } = orderRes.data.order;
       const authUser = JSON.parse(localStorage.getItem('authUser'));
 
@@ -57,10 +58,10 @@ function PaymentPage() {
         description: `Payment for ${type}`,
         order_id,
         handler: async (response) => {
-          const verifyRes = await axios.post('http://localhost:5000/api/payment/verify', response);
+          const verifyRes = await axios.post(`${BASE_URL}/api/payment/verify`, response);
           if (verifyRes.data.success) {
             // Log payment
-            await axios.post('http://localhost:5000/api/payment-success', {
+            await axios.post(`${BASE_URL}/api/payment-success`, {
               email: authUser?.email || 'anonymous@test.com',
               paymentId: response.razorpay_payment_id,
               amount,
@@ -69,7 +70,7 @@ function PaymentPage() {
 
             // Submit message
             if (type === 'message' && message) {
-              await axios.post('http://localhost:5000/api/messages', {
+              await axios.post(`${BASE_URL}/api/messages`, {
                 name: authUser?.name,
                 email: authUser?.email,
                 message,
@@ -79,7 +80,7 @@ function PaymentPage() {
 
             // Submit call schedule
             if (type === 'call' && callDetails) {
-              await axios.post('http://localhost:5000/api/schedule-call', callDetails);
+              await axios.post(`${BASE_URL}/api/schedule-call`, callDetails);
               localStorage.removeItem('pendingCall');
             }
 
