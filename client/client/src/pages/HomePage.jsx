@@ -97,14 +97,6 @@ function HomePage() {
         </ol>
       </section>
 
-      {/* 🔹 Footer */}
-      <footer className="modern-footer">
-        <p>© {new Date().getFullYear()} Samadhan Hub. All rights reserved.</p>
-        <p>
-          Need help? <a href="mailto:samadhanhub@gmail.com">Contact Support</a>
-        </p>
-      </footer>
-
       {/* 🔹 Scroll to Top */}
       {showScroll && (
         <button className="scroll-to-top" onClick={scrollToTop}>

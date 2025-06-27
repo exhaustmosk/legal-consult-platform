@@ -28,3 +28,31 @@
 .history-table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
+.refund-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: #f9f9ff;
+  border: 1px solid #d0d4ff;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.refund-text {
+  font-size: 1.05rem;
+  margin-bottom: 0.6rem;
+  color: #444;
+}
+
+.refund-button {
+  background-color: #4169e1;
+  color: #fff;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.refund-button:hover {
+  background-color: #2e51ba;
+}

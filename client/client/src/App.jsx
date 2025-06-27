@@ -13,9 +13,12 @@ import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
 import PrivateRoute from './components/PrivateRoute';
 import AdminCalls from './pages/AdminCalls';
-import logo from './assets/logo.png';
 import UserProfile from './pages/UserProfile';
-
+import ContactUs from './pages/ContactUs';
+import RefundPolicy from './pages/RefundPolicy'; // ✅ NEW
+import TermsAndConditions from './pages/TermsAndConditions';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import logo from './assets/logo.png';
 import './styles/theme.css';
 
 function App() {
@@ -67,9 +70,8 @@ function App() {
               <div className="profile-dropdown">
                 {user.type === 'user' && (
                   <>
-                  <Link to="/user-profile">Profile</Link>
+                    <Link to="/user-profile">Profile</Link>
                     <Link to="/user-dashboard">Booking</Link>
-                    
                   </>
                 )}
                 {user.type === 'admin' && (
@@ -92,6 +94,7 @@ function App() {
           <Link to="/">Home Page</Link>
           <Link to="/user-dashboard">Bookings</Link>
           <Link to="/transaction-history">Transactions</Link>
+          <Link to="/contact">Support</Link>
         </nav>
       )}
 
@@ -111,6 +114,10 @@ function App() {
           <Route path="/user-login" element={<LoginPage type="user" setUser={setUser} />} />
           <Route path="/admin-login" element={<LoginPage type="admin" setUser={setUser} />} />
           <Route path="/login/user" element={<LoginPage type="user" setUser={setUser} />} />
+          <Route path="/refund-policy" element={<RefundPolicy />} /> {/* ✅ NEW route */}
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
 
           {/* Protected Routes */}
           <Route
@@ -129,7 +136,6 @@ function App() {
               </PrivateRoute>
             }
           />
-
           <Route
             path="/admin-dashboard"
             element={
@@ -154,12 +160,14 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/call-scheduler" element={
-  <PrivateRoute allowedType="user">
-    <CallScheduleForm />
-  </PrivateRoute>
-} />
-
+          <Route
+            path="/call-scheduler"
+            element={
+              <PrivateRoute allowedType="user">
+                <CallScheduleForm />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/transaction-history"
             element={
@@ -184,8 +192,27 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/contact"
+            element={
+              <PrivateRoute allowedType="user">
+                <ContactUs />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </main>
+
+      {/* ✅ Bottom footer tab */}
+<footer className="app-footer">
+  <p>
+    © 2025 Samadhan Hub. All rights reserved.{" "}
+    <Link to="/contact">Need support?</Link> |{" "}
+    <Link to="/refund-policy">Refund Policy</Link> |{" "}
+    <Link to="/terms-and-conditions">Terms & Conditions</Link> |{" "}
+    <Link to="/privacy-policy">Privacy Policy</Link>
+  </p>
+</footer>
     </div>
   );
 }

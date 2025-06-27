@@ -1,0 +1,79 @@
+.contact-container {
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+.contact-hero {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.contact-hero h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+}
+
+.contact-hero p {
+  color: #555;
+  font-size: 1.1rem;
+}
+
+.contact-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.card {
+  background: white;
+  padding: 1.5rem 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-width: 400px;
+  flex: 1 1 300px;
+}
+
+.card h2 {
+  margin-bottom: 0.5rem;
+  color: #34495e;
+}
+
+.card p, .card ul {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.card a {
+  color: #0077cc;
+  text-decoration: none;
+}
+
+.card.warning {
+  border-left: 5px solid #e74c3c;
+  background-color: #fff6f6;
+}
+
+.refund-button {
+  display: inline-block;
+  margin-top: 0.8rem;
+  background-color: #fefefe;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.refund-button:hover {
+  background-color: #cdcdcd;
+}
+
+.card.refund {
+  /* border-left: 5px solid #47578a; */
+  background-color: #ffffff;
+}
