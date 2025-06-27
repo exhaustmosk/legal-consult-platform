@@ -10,17 +10,28 @@ function UserLogin() {
   const nav = useNavigate();
 
   const handle = async () => {
-    const res = await fetch(`${BASE_URL}/api/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password: pass }),
-    });
-    const d = await res.json();
-    if (d.success && !d.isAdmin) {
-      localStorage.setItem('authUser', JSON.stringify(d.user));
-      nav('/user-dashboard');
-    } else {
-      setErr('Invalid credentials');
+    // Password validation
+    if (pass.length < 8) {
+      setErr('Password must be at least 8 characters long.');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${BASE_URL}/api/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass }),
+      });
+      const d = await res.json();
+
+      if (d.success && !d.isAdmin) {
+        localStorage.setItem('authUser', JSON.stringify(d.user));
+        nav('/user-dashboard');
+      } else {
+        setErr('Invalid credentials');
+      }
+    } catch (error) {
+      setErr('Server error. Please try again later.');
     }
   };
 
@@ -28,8 +39,19 @@ function UserLogin() {
     <div style={styles.container}>
       <div style={styles.card}>
         <h2 style={styles.title}>User Login</h2>
-        <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" style={styles.input} />
-        <input type="password" value={pass} onChange={e => setPass(e.target.value)} placeholder="Password" style={styles.input} />
+        <input
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="Email"
+          style={styles.input}
+        />
+        <input
+          type="password"
+          value={pass}
+          onChange={e => setPass(e.target.value)}
+          placeholder="Password"
+          style={styles.input}
+        />
         <button onClick={handle} style={styles.button}>Login</button>
         {err && <p style={styles.error}>{err}</p>}
       </div>
